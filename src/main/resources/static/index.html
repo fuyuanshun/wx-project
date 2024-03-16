@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片上传</title>
+</head>
+<body>
+  <!--微信sdk-->
+  <script src="./js/jweixin-1.6.0.js" type="text/javascript" charset="utf-8"></script>
+  <!-- sha1加密工具 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha1.min.js" type="text/javascript" charset="utf-8"></script>
+</body>
+
+<script>
+    var url = {
+        //后端获取token接口
+        token_url : '/wx/get/token',
+        //后端获取ticket接口
+        ticket_url : '/wx/get/ticket?token='
+    }
+    let token;
+    function getToken() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', url.token_url, false);
+        xhr.onreadystatechange = function() { // 定义状态改变时的处理函数
+            if (xhr.readyState === 4 && xhr.status === 200) { // 当请求完成且返回正常结果时
+                var responseData = JSON.parse(xhr.responseText); // 将响应文本转换为JSON格式
+                console.log("responseData : " + responseData);
+                token = responseData['access_token'];
+            }
+        };
+        xhr.send();
+        return '';
+    }
+    getToken();
+
+    let jsapi_ticket;
+    function getTicket(){
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', url.ticket_url + token + '&type=jsapi',false);
+        xhr.onreadystatechange = function() { // 定义状态改变时的处理函数
+            if (xhr.readyState === 4 && xhr.status === 200) { // 当请求完成且返回正常结果时
+                var responseData = JSON.parse(xhr.responseText); // 将响应文本转换为JSON格式
+                console.log("responseData : " + responseData)
+                jsapi_ticket = responseData['ticket'];
+            }
+        };
+        xhr.send();
+    }
+    getTicket();
+
+
+    function sortKeysJSON(json) {
+        const sortedKeys = Object.keys(json).sort();
+        let res = '';
+        sortedKeys.forEach(key => {
+            res += (key + '=' + json[key]) + '&';
+        });
+        return res.slice(0, -1).toLowerCase();
+    }
+
+    var param = {
+        nonceStr: '1234',
+        timestamp: Math.floor(new Date().getTime() / 1000),
+        jsapi_ticket : jsapi_ticket,
+        url : window.location.href
+    }
+
+    // 进行sha1加密
+    var signature = CryptoJS.SHA1(sortKeysJSON(param)).toString();
+    // console.log(signature)
+
+    const share = ()=>{
+        wx.config({
+            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: 'wx39c2c5c75813b3c4', // 必填，公众号的唯一标识
+            timestamp: param.timestamp, // 必填，生成签名的时间戳
+            nonceStr: param.nonceStr, // 必填，生成签名的随机串
+            signature: signature,// 必填，签名
+            jsApiList: ['chooseImage', 'updateAppMessageShareData'] // 必填，需要使用的JS接口列表
+        });
+
+        wx.ready(function(){
+            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+            console.info("success")
+            wx.updateAppMessageShareData({
+                title: '标题', // 分享标题
+                desc: '描述', // 分享描述
+                link: '', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '', // 分享图标
+                success: function () {
+                    // 设置成功
+                    console.log('分享成功')
+                },
+                fail:function (){
+                    console.log('error')
+                }
+            })
+        });
+        wx.error(function(res){
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+            console.info("error")
+        });
+    }
+
+    share();
+
+</script>
+</html>

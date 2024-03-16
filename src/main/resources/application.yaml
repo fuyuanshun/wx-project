@@ -1,0 +1,24 @@
+# 端口
+server:
+  port: 80
+
+spring:
+  application:
+    name: wx-project
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password:
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+
+#微信配置参数
+wx:
+  #微信公众号中设置的token
+  default_token: fysfysfys
+  appid: wx39c2c5c75813b3c4
+  secret: secret
+
