@@ -9,11 +9,9 @@ import com.fys.wx.project.constant.URLConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author fys
  * @date 2024/3/16
- * @description
+ * @description 微信接口
  */
 @RestController
-public class MainController {
+public class WXController {
 
     @Autowired
     private StringRedisTemplate redisTemplate;

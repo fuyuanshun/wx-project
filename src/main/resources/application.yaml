@@ -1,24 +1,36 @@
 # 端口
 server:
-  port: 80
+  port: 8080
 
 spring:
   application:
     name: wx-project
+  #redis配置
   redis:
     host: localhost
     port: 6379
     database: 0
-    password:
+    password: fys
+  #mysql配置
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3308/fysprj?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+      username: root
+      password: root
   mvc:
     view:
       prefix: /
       suffix: .html
+
+mybatis:
+  mapper-locations: mapper/*.xml
+  type-aliases-package: com.fys.wx.project.entity
+
 
 #微信配置参数
 wx:
   #微信公众号中设置的token
   default_token: fysfysfys
   appid: wx39c2c5c75813b3c4
-  secret: secret
+  secret: 7bd1094d19088664b14d27ba130fc83f
 
