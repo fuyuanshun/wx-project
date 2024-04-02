@@ -1,11 +1,14 @@
 package com.fys.wx.project.controller;
 
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSONObject;
 import com.fys.wx.project.service.UserService;
+import com.fys.wx.project.utils.ResponseResult;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 
 /**
  * @author fys
@@ -23,12 +26,13 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public String login(@RequestParam("account") String account, @RequestParam("password") String password){
+    public ResponseResult<String> login(@RequestParam("account") String account, @RequestParam("password") String password){
         return userService.login(account, password);
     }
 
-    @PostMapping("/user/list")
+    @GetMapping("/user/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public String userList(){
-        return "";
+        return JSONUtil.toJsonStr(userService.list());
     }
 }

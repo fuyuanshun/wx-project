@@ -1,5 +1,6 @@
 package com.fys.wx.project.persistence;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fys.wx.project.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
  * @description
  */
 @Mapper
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User> {
 
     /**
      * 根据用户账号和用户密码登录
@@ -19,4 +20,6 @@ public interface UserMapper {
      * @return
      */
     User getUserByUsernameAndPassword(@Param("account") String account, @Param("password")String password);
+
+    User getUserRoleByUserName(@Param("account") String account);
 }

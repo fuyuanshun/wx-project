@@ -1,12 +1,20 @@
 package com.fys.wx.project.service.impl;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fys.wx.project.constant.TokenConstant;
+import com.fys.wx.project.entity.LoginUser;
 import com.fys.wx.project.entity.User;
 import com.fys.wx.project.persistence.UserMapper;
 import com.fys.wx.project.service.UserService;
-import com.fys.wx.project.utils.JwtUtil;
+import com.fys.wx.project.utils.JwtUtils;
+import com.fys.wx.project.utils.ResponseResult;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author fys
@@ -14,27 +22,42 @@ import org.springframework.stereotype.Service;
  * @description
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserMapper userMapper) {
+    private final AuthenticationManager authenticationManager;
+
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    public UserServiceImpl(UserMapper userMapper, AuthenticationManager authenticationManager, RedisTemplate<String, Object> redisTemplate) {
         this.userMapper = userMapper;
+        this.authenticationManager = authenticationManager;
+        this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * 登录认证
+     *  1.security验证账号密码
+     *  2.如果认证信息为空，则返回错误
+     *  3.否则，创建token，存入redis后并返回
+     * @param account 用户账户
+     * @param password 用户密码
+     * @return
+     */
     @Override
-    public String login(String account, String password) {
-        User user = userMapper.getUserByUsernameAndPassword(account, password);
-        JSONObject obj = JSONUtil.createObj();
-
-        if(user != null){
-            obj.set("state", true);
-            obj.set("msg", "登陆成功");
-            obj.set("token", JwtUtil.createToken(user.getId()));
-            return obj.toString();
+    public ResponseResult<String> login(String account, String password) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(account, password);
+        Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        if (authenticate != null) {
+            LoginUser principal = (LoginUser)authenticate.getPrincipal();
+            User user = principal.getUser();
+            String token = JwtUtils.createToken(user.getId());
+            //用户数据存入redis
+            redisTemplate.opsForValue().set("login:" + user.getId(), principal, TokenConstant.TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+            return ResponseResult.success(token);
+        } else {
+            return new ResponseResult<>(0, "用户账户或密码错误", null);
         }
-        obj.set("state", false);
-        obj.set("msg", "用户账户或密码错误");
-        return obj.toString();
     }
 }
