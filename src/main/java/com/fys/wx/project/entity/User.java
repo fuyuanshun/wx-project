@@ -41,9 +41,13 @@ public class User implements Serializable {
     //用户地址
     @TableField("user_address")
     private String userAddress;
+    //用户账户创建日期
     @TableField("create_date")
     private Date createDate;
+    //用户最后一次登陆日期
     @TableField("last_login_date")
     private Date lastLoginDate;
+    //用户头像
+    private String avatar;
     private Integer enable;
 }

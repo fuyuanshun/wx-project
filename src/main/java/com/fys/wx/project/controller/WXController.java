@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @description 微信接口
  */
 @RestController
+@RequestMapping("/wx")
 public class WXController {
 
     @Autowired
@@ -46,7 +48,7 @@ public class WXController {
      * @param echostr 随机字符串
      * @return
      */
-    @GetMapping("/wx/verify")
+    @GetMapping("/verify")
     public String verifyWX(@RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
                            @RequestParam("nonce") int nonce, @RequestParam("echostr") String echostr){
 
@@ -65,7 +67,7 @@ public class WXController {
      *  获取accessToken
      * @return
      */
-    @GetMapping("/wx/get/token")
+    @GetMapping("/get/token")
     public String getAccessToken(){
         String token = redisTemplate.opsForValue().get(RedisKeyConstant.TOKEN_KEY);
         if (token != null && !"".equals(token)) {
@@ -94,7 +96,7 @@ public class WXController {
      * @param token
      * @return
      */
-    @GetMapping("/wx/get/ticket")
+    @GetMapping("/get/ticket")
     public String getTicket(@RequestParam("token") String token){
         //token可能有误，要先验证token与redis中的token是否一致
         String redisToken = redisTemplate.opsForValue().get(RedisKeyConstant.TOKEN_KEY);

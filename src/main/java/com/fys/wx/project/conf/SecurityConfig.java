@@ -52,6 +52,9 @@ public class SecurityConfig {
         //自定义未认证请求响应
 //        http.exceptionHandling((e)-> e.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
+        http.logout(logout->{
+            logout.clearAuthentication(true);
+        });
         //在验证之前先执行过滤器校验token
         http.addFilterBefore(new TokenFilter(redisTemplate), UsernamePasswordAuthenticationFilter.class);
         return http.build();
