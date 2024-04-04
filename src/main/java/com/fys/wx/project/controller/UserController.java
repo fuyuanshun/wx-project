@@ -44,6 +44,10 @@ public class UserController {
     }
 
     /**
+     * 用户注册
+     */
+
+    /**
      * 解析token返回用户信息
      * @param request
      * @return
