@@ -5,6 +5,8 @@ import com.fys.wx.project.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author fys
  * @date 2024/3/31
@@ -22,4 +24,10 @@ public interface UserMapper extends BaseMapper<User> {
     User getUserByUsernameAndPassword(@Param("account") String account, @Param("password")String password);
 
     User getUserRoleByUserName(@Param("account") String account);
+
+    /**
+     * 获取用户列表
+     * @return
+     */
+    List<User> userList();
 }

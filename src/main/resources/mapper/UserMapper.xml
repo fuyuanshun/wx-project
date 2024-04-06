@@ -26,4 +26,10 @@
         group by t1.id
     </select>
 
+    <select id="userList" resultMap="userMap">
+        select t1.id, user_name, last_login_date, avatar, enable, GROUP_CONCAT(t3.role_name) as role from f_user t1
+        left join role_user t2 on t1.id = t2.user_id
+        left join f_role t3 on t2.role_id = t3.id
+        group by t1.id
+    </select>
 </mapper>

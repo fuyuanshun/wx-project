@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fys.wx.project.entity.User;
 import com.fys.wx.project.utils.ResponseResult;
 
+import java.util.List;
+
 /**
  * @author fys
  * @date 2024/3/31
@@ -18,4 +20,10 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResponseResult<String> login(String account, String password);
+
+    /**
+     * 获取用户列表
+     * @return
+     */
+    List<User> userList();
 }

@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,9 +59,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             String token = JwtUtils.createToken(user.getId());
             //用户数据存入redis
             redisTemplate.opsForValue().set("login:" + user.getId(), principal, TokenConstant.TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+            user.setLastLoginDate(new Date());
+            userMapper.updateById(user);
             return ResponseResult.success(token);
         } else {
             return new ResponseResult<>(0, "用户账户或密码错误", null);
         }
+    }
+
+    /**
+     * 获取用户列表
+     * @return
+     */
+    @Override
+    public List<User> userList() {
+        return userMapper.userList();
     }
 }

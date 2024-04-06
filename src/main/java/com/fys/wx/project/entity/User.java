@@ -49,5 +49,6 @@ public class User implements Serializable {
     private Date lastLoginDate;
     //用户头像
     private String avatar;
+    //用户是否可用
     private Integer enable;
 }

@@ -2,17 +2,21 @@ package com.fys.wx.project.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSONObject;
+import com.fys.wx.project.entity.User;
 import com.fys.wx.project.service.UserService;
 import com.fys.wx.project.utils.ResponseResult;
 import com.fys.wx.project.utils.UserUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author fys
  * @date 2024/3/31
  * @description 用户接口
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -30,7 +34,6 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    @CrossOrigin
     public ResponseResult<String> login(@RequestBody String json){
         if(StrUtil.isNotEmpty(json)){
             JSONObject jsonObject = JSONObject.parseObject(json);
@@ -53,7 +56,6 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/info", produces = "application/json;charset=utf-8")
-    @CrossOrigin
     public ResponseResult<JSONObject> userInfo(HttpServletRequest request){
         Object user = request.getAttribute("user");
         //信息脱敏
@@ -61,4 +63,14 @@ public class UserController {
         return ResponseResult.success(jsonObject);
     }
 
+    /**
+     * 获取用户列表
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/list", produces = "application/json;charset=utf-8")
+    public ResponseResult<List<User>> userList(){
+        List<User> result = userService.userList();
+        return ResponseResult.success(result);
+    }
 }
