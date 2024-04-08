@@ -38,13 +38,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, RedisTemplate<String, Object> redisTemplate) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement((session)->
                 session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers("/user/login").anonymous()
+                    .requestMatchers(
+                            "/user/login"
+                    ).anonymous()
                     .anyRequest()
                     .authenticated()
             );
@@ -52,9 +53,9 @@ public class SecurityConfig {
         //自定义未认证请求响应
 //        http.exceptionHandling((e)-> e.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
-        http.logout(logout->{
-            logout.clearAuthentication(true);
-        });
+        //关闭csrf
+        http.csrf(AbstractHttpConfigurer::disable);
+
         //在验证之前先执行过滤器校验token
         http.addFilterBefore(new TokenFilter(redisTemplate), UsernamePasswordAuthenticationFilter.class);
         return http.build();
