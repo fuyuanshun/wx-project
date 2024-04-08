@@ -16,7 +16,6 @@ import java.util.List;
  * @date 2024/3/31
  * @description 用户接口
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -33,6 +32,7 @@ public class UserController {
      * @param json
      * @return
      */
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseResult<String> login(@RequestBody String json){
         if(StrUtil.isNotEmpty(json)){
@@ -55,6 +55,7 @@ public class UserController {
      * @param request
      * @return
      */
+    @CrossOrigin
     @GetMapping(value = "/info", produces = "application/json;charset=utf-8")
     public ResponseResult<JSONObject> userInfo(HttpServletRequest request){
         Object user = request.getAttribute("user");
@@ -68,9 +69,10 @@ public class UserController {
      * @param
      * @return
      */
-    @GetMapping(value = "/list", produces = "application/json;charset=utf-8")
-    public ResponseResult<List<User>> userList(){
-        List<User> result = userService.userList();
+    @CrossOrigin
+    @GetMapping(value = "/list/{pageIndex}/{pageSize}", produces = "application/json;charset=utf-8")
+    public ResponseResult<List<User>> userList(@PathVariable("pageIndex") Integer pageIndex, @PathVariable("pageSize") Integer pageSize){
+        List<User> result = userService.userList(pageIndex, pageSize);
         return ResponseResult.success(result);
     }
 }

@@ -29,5 +29,5 @@ public interface UserMapper extends BaseMapper<User> {
      * 获取用户列表
      * @return
      */
-    List<User> userList();
+    List<User> userList(@Param("offset") Integer offset, @Param("pageSize") Integer Size);
 }

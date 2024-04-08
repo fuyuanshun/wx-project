@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -46,6 +48,8 @@ public class User implements Serializable {
     private Date createDate;
     //用户最后一次登陆日期
     @TableField("last_login_date")
+    //转字符串
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastLoginDate;
     //用户头像
     private String avatar;

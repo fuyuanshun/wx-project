@@ -1,5 +1,6 @@
 package com.fys.wx.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fys.wx.project.constant.TokenConstant;
 import com.fys.wx.project.entity.LoginUser;
@@ -72,7 +73,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public List<User> userList() {
-        return userMapper.userList();
+    public List<User> userList(Integer pageIndex, Integer pageSize) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        long totalCount = userMapper.selectCount(queryWrapper);
+        //总页数
+        long totalPageCount = totalCount % pageSize == 0 ? totalCount / pageSize : (totalCount / pageSize) + 1;
+        //当前页不能小于0
+        if(pageIndex < 0){
+            pageIndex = 0;
+        }
+        //当前页不能大于总页数
+        if(pageIndex > totalPageCount){
+            pageIndex = (int)totalPageCount;
+        }
+        return userMapper.userList((pageIndex - 1) * pageSize, pageSize);
     }
 }
