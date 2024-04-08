@@ -16,6 +16,7 @@ import java.util.List;
  * @date 2024/3/31
  * @description 用户接口
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -32,7 +33,6 @@ public class UserController {
      * @param json
      * @return
      */
-    @CrossOrigin
     @PostMapping("/login")
     public ResponseResult<String> login(@RequestBody String json){
         if(StrUtil.isNotEmpty(json)){
@@ -55,7 +55,6 @@ public class UserController {
      * @param request
      * @return
      */
-    @CrossOrigin
     @GetMapping(value = "/info", produces = "application/json;charset=utf-8")
     public ResponseResult<JSONObject> userInfo(HttpServletRequest request){
         Object user = request.getAttribute("user");
@@ -69,10 +68,28 @@ public class UserController {
      * @param
      * @return
      */
-    @CrossOrigin
     @GetMapping(value = "/list/{pageIndex}/{pageSize}", produces = "application/json;charset=utf-8")
-    public ResponseResult<List<User>> userList(@PathVariable("pageIndex") Integer pageIndex, @PathVariable("pageSize") Integer pageSize){
-        List<User> result = userService.userList(pageIndex, pageSize);
-        return ResponseResult.success(result);
+    public ResponseResult<JSONObject> userList(@PathVariable("pageIndex") Integer pageIndex, @PathVariable("pageSize") Integer pageSize){
+        return userService.userList(pageIndex, pageSize);
+    }
+
+    /**
+     * 根据id禁用用户
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/disable/{id}")
+    public ResponseResult<String> disableUser(@PathVariable("id") Integer id){
+        return userService.disableUser(id);
+    }
+
+    /**
+     * 根据id启用用户
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/enable/{id}")
+    public ResponseResult<String> enableUser(@PathVariable("id") Integer id){
+        return userService.enableUser(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.fys.wx.project.service;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fys.wx.project.entity.User;
 import com.fys.wx.project.utils.ResponseResult;
@@ -26,5 +27,19 @@ public interface UserService extends IService<User> {
      * 获取用户列表
      * @return
      */
-    List<User> userList(Integer pageIndex, Integer pageSize);
+    ResponseResult<JSONObject> userList(Integer pageIndex, Integer pageSize);
+
+    /**
+     * 根据id禁用用户
+     * @param id
+     * @return
+     */
+    ResponseResult<String> disableUser(Integer id);
+
+    /**
+     * 根据id启用用户
+     * @param id
+     * @return
+     */
+    ResponseResult<String> enableUser(Integer id);
 }

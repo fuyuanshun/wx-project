@@ -1,5 +1,6 @@
 package com.fys.wx.project.service.impl;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fys.wx.project.constant.TokenConstant;
@@ -73,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public List<User> userList(Integer pageIndex, Integer pageSize) {
+    public ResponseResult<JSONObject> userList(Integer pageIndex, Integer pageSize) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         long totalCount = userMapper.selectCount(queryWrapper);
         //总页数
@@ -86,6 +87,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(pageIndex > totalPageCount){
             pageIndex = (int)totalPageCount;
         }
-        return userMapper.userList((pageIndex - 1) * pageSize, pageSize);
+        List<User> userList = userMapper.userList((pageIndex - 1) * pageSize, pageSize);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("pageIndex", pageIndex);
+        jsonObject.put("totalCount", totalCount);
+        jsonObject.put("pageSize", pageSize);
+        jsonObject.put("totalPage", totalPageCount);
+        jsonObject.put("records", userList);
+        return ResponseResult.success(jsonObject);
+    }
+
+    @Override
+    public ResponseResult<String> disableUser(Integer id) {
+        int i = userMapper.deleteById(id);
+        return ResponseResult.success(String.valueOf(i));
+    }
+
+    @Override
+    public ResponseResult<String> enableUser(Integer id) {
+        int i = userMapper.enableUserById(id);
+        return ResponseResult.success(String.valueOf(i));
     }
 }

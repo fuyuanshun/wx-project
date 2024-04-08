@@ -30,4 +30,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> userList(@Param("offset") Integer offset, @Param("pageSize") Integer Size);
+
+
+    int enableUserById(Integer id);
 }
