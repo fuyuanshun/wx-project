@@ -75,8 +75,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public ResponseResult<JSONObject> userList(Integer pageIndex, Integer pageSize) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        long totalCount = userMapper.selectCount(queryWrapper);
+        Integer totalCount = userMapper.getAllCount();
+
         //总页数
         long totalPageCount = totalCount % pageSize == 0 ? totalCount / pageSize : (totalCount / pageSize) + 1;
         //当前页不能小于0

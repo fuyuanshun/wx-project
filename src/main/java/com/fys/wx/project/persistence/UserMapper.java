@@ -33,4 +33,10 @@ public interface UserMapper extends BaseMapper<User> {
 
 
     int enableUserById(Integer id);
+
+    /**
+     * 获取总用户数（包括被禁用的）
+     * @return
+     */
+    Integer getAllCount();
 }

@@ -40,4 +40,8 @@
     <update id="enableUserById">
         update f_user set enable = 1 where id = #{id} and enable = 0
     </update>
+
+    <select id="getAllCount" resultType="Integer">
+        select count(*) from f_user
+    </select>
 </mapper>

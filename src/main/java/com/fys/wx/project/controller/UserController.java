@@ -6,7 +6,10 @@ import com.fys.wx.project.entity.User;
 import com.fys.wx.project.service.UserService;
 import com.fys.wx.project.utils.ResponseResult;
 import com.fys.wx.project.utils.UserUtils;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.context.annotation.Role;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +59,7 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/info", produces = "application/json;charset=utf-8")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseResult<JSONObject> userInfo(HttpServletRequest request){
         Object user = request.getAttribute("user");
         //信息脱敏
@@ -69,6 +73,7 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/list/{pageIndex}/{pageSize}", produces = "application/json;charset=utf-8")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseResult<JSONObject> userList(@PathVariable("pageIndex") Integer pageIndex, @PathVariable("pageSize") Integer pageSize){
         return userService.userList(pageIndex, pageSize);
     }
@@ -79,6 +84,7 @@ public class UserController {
      * @return
      */
     @PostMapping(value = "/disable/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseResult<String> disableUser(@PathVariable("id") Integer id){
         return userService.disableUser(id);
     }
@@ -89,6 +95,7 @@ public class UserController {
      * @return
      */
     @PostMapping(value = "/enable/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseResult<String> enableUser(@PathVariable("id") Integer id){
         return userService.enableUser(id);
     }
